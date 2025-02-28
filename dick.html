@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Richi's Nightmare</title>
+    <style>
+        body { text-align: center; background-color: black; color: white; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; background-size: cover; background-position: center; position: relative; }
+        .game-object { width: 100px; height: 100px; position: absolute; background-size: cover; cursor: pointer; }
+        .menu-button { position: absolute; top: 10px; padding: 10px; background: white; color: black; border: none; cursor: pointer; }
+        #to-menu { left: 10px; }
+        #to-day1 { left: 120px; }
+        #to-day2 { left: 230px; }
+    </style>
+</head>
+<body>
+    <h1>Richi's Nightmare</h1>
+    <div id="game-container"></div>
+    <button id="to-menu" class="menu-button" onclick="changeSection('menu')">Menú</button>
+    <button id="to-day1" class="menu-button" onclick="changeSection('day1')">Día 1</button>
+    <button id="to-day2" class="menu-button" onclick="changeSection('day2')">Día 2</button>
+    
+    <script>
+        const sections = {
+            menu: {
+                background: 'menu/Fondo.png',
+                objects: [
+                    { id: 'menu-char', x: 100, y: 150, img: 'menu/images/Mi actor u objeto.png', scripts: ['StartScript', 'WhenTouchDownScript'] }
+                ]
+            },
+            day1: {
+                background: 'day 1/Fondo.png',
+                objects: [
+                    { id: 'day1-char1', x: 100, y: 150, img: 'day 1/images/Mi actor u objeto (10).png', scripts: ['StartScript'] },
+                    { id: 'day1-char2', x: 200, y: 250, img: 'day 1/images/Mi actor u objeto (8).png', scripts: ['WhenTouchDownScript'] }
+                ]
+            },
+            day2: {
+                background: 'day 2/Fondo.png',
+                objects: [
+                    { id: 'day2-char1', x: 300, y: 350, img: 'day 2/images/Mi actor u objeto (10).png', scripts: ['BroadcastScript'] },
+                    { id: 'day2-char2', x: 400, y: 450, img: 'day 2/images/Mi actor u objeto (8).png', scripts: ['WhenScript'] }
+                ]
+            }
+        };
+
+        function changeSection(section) {
+            let gameContainer = document.getElementById('game-container');
+            gameContainer.style.backgroundImage = `url('${sections[section].background}')`;
+            gameContainer.innerHTML = '';
+            
+            sections[section].objects.forEach(obj => {
+                let div = document.createElement('div');
+                div.className = 'game-object';
+                div.style.left = obj.x + 'px';
+                div.style.top = obj.y + 'px';
+                div.style.backgroundImage = `url('${obj.img}')`;
+                div.id = obj.id;
+                gameContainer.appendChild(div);
+                
+                // Eventos según el script
+                if (obj.scripts.includes('StartScript')) {
+                    console.log(`${obj.id} ha iniciado.`);
+                }
+                if (obj.scripts.includes('WhenTouchDownScript')) {
+                    div.addEventListener('click', () => {
+                        console.log(`${obj.id} ha sido tocado.`);
+                    });
+                }
+                if (obj.scripts.includes('BroadcastScript')) {
+                    setTimeout(() => {
+                        console.log(`${obj.id} envió un mensaje.`);
+                    }, 2000);
+                }
+                if (obj.scripts.includes('WhenScript')) {
+                    console.log(`${obj.id} espera un evento.`);
+                }
+            });
+        }
+
+        // Iniciar en el menú
+        changeSection('menu');
+    </script>
+</body>
+</html>
